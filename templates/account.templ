@@ -1,0 +1,27 @@
+package templates
+
+type User struct {
+	ID       int
+	Username string
+	Email    string
+	Password string
+}
+
+templ account(u User) {
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Account</title>
+            <link rel="stylesheet" href="/assets/css/styles.css">
+            <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
+        </head>
+        <body class="account-background">
+            <div class="header">
+                <h1>Welcome, { u.Username }!</h1>
+                <a href="/logout" hx-post="/logout" hx-trigger="click" hx-target="this" hx-swap="outerHTML">Logout</a>
+            </div>
+        </body>
+    </html>
+}

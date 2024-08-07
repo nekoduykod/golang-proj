@@ -1,0 +1,29 @@
+package templates
+
+templ login() {
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Login</title>
+            <link rel="stylesheet" href="/assets/css/styles.css">
+            <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
+        </head>
+        <body class="centered home-background">
+            <div class="overlay-box">
+                <h1>Увійти на Сайт</h1>
+                <form action="/login" method="post">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <br>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <br>
+                    <button type="submit">Увійти</button>
+                </form>
+                <p><a href="/register">Зареєструватись</a> | <a href="/forgot-password">Забули пароль?</a></p>
+            </div>
+        </body>
+    </html>
+}
