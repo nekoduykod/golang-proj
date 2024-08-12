@@ -1,4 +1,4 @@
-package database
+package db
 
 import (
 	"database/sql"
@@ -10,9 +10,9 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var db *sql.DB
+var Db *sql.DB
 
-func init() {
+func DB_init() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	getConnection()
 }
@@ -22,11 +22,11 @@ func getConnection() {
 
 	err = godotenv.Load()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to connect to database")
+		log.Fatal().Err(err).Msg("Failed to load end")
 	}
 
 	connection := os.Getenv("POSTGRES_CONNECTION")
-	db, err = sql.Open("postgres", connection)
+	Db, err = sql.Open("postgres", connection)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to connect to database")
 	}
@@ -46,7 +46,7 @@ func createMigration() {
 			updated_at TIMESTAMPTZ DEFAULT NOW()
 		)`
 
-	_, err := db.Exec(stmt)
+	_, err := Db.Exec(stmt)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to create users table")
 	}

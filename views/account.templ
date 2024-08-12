@@ -1,24 +1,21 @@
 package views
 
-type User struct {
-	ID       int
-	Username string
-	Email    string
-	Password string
-}
+import "app/models"
 
-templ Account(u User) {
+templ Account(u models.User) {
     <html>
         <head>
             <meta charset="UTF-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Account</title>
+            <script src="https://unpkg.com/htmx.org@1.8.6"></script>
         </head>
         <body>
             <div>
                 <h1>Welcome, { u.Username }!</h1>
-                <a href="/logout" hx-post="/logout" hx-trigger="click" hx-target="this" hx-swap="outerHTML">Logout</a>
+                <a href="/logout" hx-post="/logout" hx-trigger="click"
+                hx-target="body" hx-swap="outerHTML">Logout</a>
             </div>
         </body>
     </html>
