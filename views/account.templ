@@ -14,7 +14,7 @@ templ Account(u models.User) {
         <body>
             <div>
                 <h1>Welcome, { u.Username }!</h1>
-                <a href="/logout" hx-post="/logout" hx-trigger="click"
+                <a href="logout" hx-post="logout" hx-trigger="click"
                 hx-target="body" hx-swap="outerHTML">Logout</a>
             </div>
         </body>

@@ -30,13 +30,6 @@ func AccountHandler(c echo.Context) error {
 		return c.Redirect(http.StatusSeeOther, "/login")
 	}
 
-	// var user models.User
-	// err = db.Db.QueryRow("SELECT id, username, email FROM users WHERE id = $1", userID).Scan(&user.ID, &user.Username, &user.Email)
-	// if err != nil {
-	// 	log.Error().Err(err).Msg("failed to fetch user from database")
-	// 	return c.Redirect(http.StatusSeeOther, "/login")
-	// }
-
 	user := models.User{ID: userID, Username: username} // Create user object from session values
 	return Render(c, views.Account(user))
 }
