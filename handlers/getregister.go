@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func RegisterHandler(c echo.Context) error {
@@ -15,10 +16,17 @@ func RegisterHandler(c echo.Context) error {
 
 // Can add SQLBuilder(squirrel) or GORM instead.
 func RegisterUser(username, email, password string) error {
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to hash password")
+		return err
+	}
+
 	stmt := `
-		INSERT INTO users (username, email, password)
+		INSERT INTO users (username, email, hashed_pwd)
 		VALUES ($1, $2, $3)`
-	db.Db.Exec(stmt, username, email, password)
+	db.Db.Exec(stmt, username, email, string(hashedPassword))
 	return nil
 }
 

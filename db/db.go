@@ -41,9 +41,8 @@ func createMigration() {
 			id SERIAL PRIMARY KEY,
 			username TEXT NOT NULL,
 			email TEXT NOT NULL,
-			password TEXT NOT NULL,
-			created_at TIMESTAMPTZ DEFAULT NOW(),
-			updated_at TIMESTAMPTZ DEFAULT NOW()
+			hashed_pwd TEXT NOT NULL,
+			created_at TIMESTAMPTZ DEFAULT NOW()
 		)`
 
 	_, err := Db.Exec(stmt)

@@ -10,16 +10,8 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/crypto/bcrypt"
 )
-
-// func SecureRandStringBytes(n int) (string, error) {
-// 	b := make([]byte, n)
-// 	if _, err := rand.Read(b); err != nil {
-// 		return "", err
-// 	}
-// 	return base64.URLEncoding.EncodeToString(b)[:n], nil
-// }
-// secret := []byte(SecureRandStringBytes(20))
 
 func LoginHandler(c echo.Context) error {
 	return Render(c, views.Login())
@@ -48,8 +40,8 @@ func PostLogin(c echo.Context) error {
 
 func authenticateUser(email, password string) (*models.User, error) {
 	var user models.User
-	stmt := `SELECT id, username, email, password FROM users WHERE email = $1`
-	err := db.Db.QueryRow(stmt, email).Scan(&user.ID, &user.Username, &user.Email, &user.Password)
+	stmt := `SELECT id, username, email, hashed_pwd FROM users WHERE email = $1`
+	err := db.Db.QueryRow(stmt, email).Scan(&user.ID, &user.Username, &user.Email, &user.Hashed_pwd)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Error().Err(err).Msg("no user found")
@@ -59,8 +51,9 @@ func authenticateUser(email, password string) (*models.User, error) {
 		return nil, err
 	}
 
-	if password != user.Password {
-		log.Error().Msg("Invalid password") // eeeww what`s that
+	err = bcrypt.CompareHashAndPassword([]byte(user.Hashed_pwd), []byte(password))
+	if err != nil {
+		log.Error().Msg("Invalid password")
 		return nil, echo.NewHTTPError(http.StatusUnauthorized, "Invalid credentials")
 	}
 
