@@ -1,5 +1,5 @@
 ## App with authentication (Login/register)
-• Go, Echo - Backend
-• Templ - templating
-• HTMX - Interactivity SPA-alike behavior
-• Database - PostgreSQL
+• Go, Echo - Backend <br />
+• Templ - templating <br />
+• HTMX - Interactivity SPA-alike behavior <br />
+• Database - PostgreSQL <br />
