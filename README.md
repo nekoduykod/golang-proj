@@ -1,4 +1,7 @@
-App with authentication (Login/register)
-Backend - echo/v4.
-Frontend - Templ template rendering - SSR; HTMX - SPA-alike behavior
-Database - PostgreSQL
+## App with authentication (Login/register)
+• Go, Echo - Backend
+• Templ - templating
+• HTMX - Interactivity SPA-alike behavior
+• Database - PostgreSQL
+
+Plan to add Tailwind CSS, and maybe React
