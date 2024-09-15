@@ -1,8 +1,8 @@
 package main
 
 import (
-	"app/db"
-	"app/handlers"
+	"app/internal/handlers"
+	"app/pkg/repository"
 	"net/http"
 	"os"
 
@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
@@ -19,12 +19,21 @@ var store *sessions.CookieStore
 
 func main() {
 	e := echo.New()
-	db.DB_init()
+
+	log.Logger = log.Output(zerolog.ConsoleWriter{
+		Out:        os.Stdout,
+		TimeFormat: "2006-01-02 15:04:05",
+	})
 
 	err := godotenv.Load()
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to load env file")
 	}
+
+	database := repository.GetConnection()
+	userRepo := repository.NewUserRepository(database)
+
+	h := handlers.NewHandlers(userRepo)
 
 	sessionSecret := os.Getenv("SESSION_SECRET")
 	if sessionSecret == "" {
@@ -33,20 +42,18 @@ func main() {
 	store = sessions.NewCookieStore([]byte(sessionSecret))
 	e.Use(session.Middleware(store))
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
 	e.GET("/", func(c echo.Context) error {
 		return c.Redirect(http.StatusSeeOther, "/register")
 	})
 
-	e.GET("register", handlers.RegisterHandler)
-	e.GET("login", handlers.LoginHandler)
-	e.GET("account", handlers.AccountHandler)
+	e.GET("register", h.RegisterHandler)
+	e.GET("login", h.LoginHandler)
+	e.GET("account", h.AccountHandler)
 
-	e.POST("register", handlers.PostRegister)
-	e.POST("login", handlers.PostLogin)
-	e.POST("logout", handlers.LogoutHandler)
+	e.POST("register", h.PostRegister)
+	e.POST("login", h.PostLogin)
+	e.POST("logout", h.LogoutHandler)
 
+	// http://localhost:8080/
 	e.Logger.Fatal(e.Start(":8080"))
 }

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"app/models"
+	"app/internal/models"
 	"app/views"
 	"net/http"
 
@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func AccountHandler(c echo.Context) error {
+func (h *Handlers) AccountHandler(c echo.Context) error {
 	sess, err := session.Get("session", c)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to get session")
@@ -30,15 +30,16 @@ func AccountHandler(c echo.Context) error {
 		return c.Redirect(http.StatusSeeOther, "/login")
 	}
 
-	user := models.User{ID: userID, Username: username} // Create user object from session values
+	user := models.User{ID: userID, Username: username}
 	return Render(c, views.Account(user))
 }
 
-func LogoutHandler(c echo.Context) error {
+func (h *Handlers) LogoutHandler(c echo.Context) error {
 	sess, err := session.Get("session", c)
 	if err != nil {
 		return c.Redirect(http.StatusSeeOther, "/login")
 	}
+	log.Info().Msg("Logout")
 
 	sess.Options.MaxAge = -1
 	sess.Save(c.Request(), c.Response())

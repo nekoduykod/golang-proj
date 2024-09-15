@@ -1,4 +1,4 @@
-package db
+package repository
 
 import (
 	"database/sql"
@@ -6,35 +6,29 @@ import (
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
-var Db *sql.DB
+var db *sql.DB
 
-func DB_init() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-	getConnection()
-}
-
-func getConnection() {
-	var err error
-
-	err = godotenv.Load()
+func GetConnection() *sql.DB {
+	err := godotenv.Load()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to load end")
 	}
 
 	connection := os.Getenv("POSTGRES_CONNECTION")
-	Db, err = sql.Open("postgres", connection)
+	db, err = sql.Open("postgres", connection)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to connect to database")
 	}
 	log.Info().Msg("Connection initialized")
 
 	createMigration()
+	return db
 }
 
+// перенести це в окремий .sql файл
 func createMigration() {
 	stmt := `
 		CREATE TABLE IF NOT EXISTS users (
@@ -45,7 +39,7 @@ func createMigration() {
 			created_at TIMESTAMPTZ DEFAULT NOW()
 		)`
 
-	_, err := Db.Exec(stmt)
+	_, err := db.Exec(stmt)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to create users table")
 	}
